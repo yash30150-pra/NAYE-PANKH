@@ -16,6 +16,8 @@
 - **Smooth Scroll Navigation** – Header links scroll gracefully to each section.
 - **Subtle Animations** – Fade‑in text, hover effects on buttons/cards, and scroll‑triggered transitions.
 - **Dark‑Mode Toggle** – Seamless colour switching with persisted user preference.
+- **Animated Counters** – Dynamic stats that count up when scrolled into view.
+- **Interactive Gallery Lightbox** – Clickable images open a fullscreen lightbox with prev/next navigation.
 - **Multi‑Section Layout** – Hero, About, Programs/Initiatives, Gallery/Impact, and Contact sections.
 - **Performance‑Focused** – No external frameworks; only native web technologies.
 

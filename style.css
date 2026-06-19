@@ -1,6 +1,6 @@
 /* ---------------------------------------------------
-   NayePankh Foundation – Design System
-   Mobile‑first, dark‑mode ready, accessible.
+   NayePankh Foundation – Advanced Design System
+   Mobile‑first, dark‑mode ready, accessible, glassmorphism, custom scrollbar.
    --------------------------------------------------- */
 
 /* 1. CSS Custom Properties (light & dark) */
@@ -12,7 +12,10 @@
   --color-primary-dark: #004d40;
   --color-accent: #ff6f00;    /* Orange – accent */
   --color-muted: #777777;
+  --color-glass: rgba(255,255,255,0.15);
+  --color-glass-dark: rgba(0,0,0,0.25);
   --font-family: 'Inter', system-ui, sans-serif;
+  --transition-duration: 0.3s;
 }
 [data-theme="dark"] {
   --color-bg: #121212;
@@ -22,6 +25,8 @@
   --color-primary-dark: #4f9a94;
   --color-accent: #ffb300;
   --color-muted: #bbbbbb;
+  --color-glass: rgba(0,0,0,0.25);
+  --color-glass-dark: rgba(255,255,255,0.15);
 }
 
 /* 2. Global Reset & Base */
@@ -32,6 +37,7 @@ body {
   background: var(--color-bg);
   color: var(--color-text);
   line-height: 1.6;
+  transition: background var(--transition-duration) ease, color var(--transition-duration) ease;
 }
 img { max-width: 100%; height:auto; display:block; }
 
@@ -40,21 +46,27 @@ img { max-width: 100%; height:auto; display:block; }
 .section { padding: 4rem 0; }
 
 /* 4. Header & Nav */
-.site-header { background: var(--color-bg-alt); position: sticky; top:0; z-index:100; }
+.site-header { background: var(--color-bg-alt); position: sticky; top:0; z-index:100; transition: background var(--transition-duration) ease; }
 .nav-container { display:flex; align-items:center; justify-content:space-between; padding:1rem 0; }
 .logo { font-size:1.5rem; font-weight:600; color:var(--color-primary); text-decoration:none; }
 .nav-links { list-style:none; display:none; }
 .nav-links li { display:inline-block; margin-left:1.5rem; }
 .nav-links a { color:var(--color-text); text-decoration:none; font-weight:500; }
 #theme-toggle { background:none; border:none; font-size:1.5rem; cursor:pointer; }
-/* Show nav on tablet+ */
 @media (min-width:600px) { .nav-links { display:flex; } }
 
-/* 5. Hero */
-.hero-section { background: var(--color-primary); color:#fff; text-align:center; min-height:70vh; display:flex; align-items:center; justify-content:center; }
+/* 5. Hero – Gradient overlay & glass effect */
+.hero-section { position:relative; background: var(--color-primary); color:#fff; text-align:center; min-height:70vh; display:flex; align-items:center; justify-content:center; overflow:hidden; }
+.hero-section::before {
+  content:"";
+  position:absolute; inset:0;
+  background: linear-gradient(135deg, rgba(0,105,92,0.6), rgba(255,111,0,0.4));
+  z-index:0;
+}
+.hero-content { position:relative; z-index:1; }
 .hero-title { font-size:2.5rem; margin-bottom:0.5rem; }
 .hero-tagline { font-size:1.2rem; margin-bottom:1.5rem; }
-.btn { display:inline-block; padding:0.75rem 1.5rem; border-radius:4px; text-decoration:none; font-weight:600; transition:background 0.3s, transform 0.3s; }
+.btn { display:inline-block; padding:0.75rem 1.5rem; border-radius:4px; text-decoration:none; font-weight:600; transition: background var(--transition-duration) ease, transform var(--transition-duration) ease; }
 .cta-btn { background: var(--color-accent); color:#fff; }
 .cta-btn:hover { opacity:0.9; transform:translateY(-2px); }
 
@@ -62,18 +74,64 @@ img { max-width: 100%; height:auto; display:block; }
 .about-section { background: var(--color-bg-alt); text-align:center; }
 .about-section h2 { margin-bottom:1rem; color:var(--color-primary); }
 
-/* 7. Programs Cards */
+/* 7. Programs – Glassmorphism cards */
 .cards-grid { display:grid; gap:1.5rem; grid-template-columns:repeat(auto-fit, minmax(250px,1fr)); }
-.card { background: var(--color-bg); border-radius:8px; padding:1.5rem; box-shadow:0 2px 6px rgba(0,0,0,0.1); transition:transform 0.3s, box-shadow 0.3s; }
+.card {
+  background: var(--color-glass);
+  border-radius:8px;
+  padding:1.5rem;
+  box-shadow:0 2px 6px rgba(0,0,0,0.1);
+  border:1px solid rgba(255,255,255,0.2);
+  backdrop-filter: blur(10px);
+  transition: transform var(--transition-duration) ease, box-shadow var(--transition-duration) ease, background var(--transition-duration) ease;
+}
+[data-theme="dark"] .card {
+  background: var(--color-glass-dark);
+  border:1px solid rgba(0,0,0,0.3);
+}
 .card:hover { transform:translateY(-4px); box-shadow:0 4px 12px rgba(0,0,0,0.15); }
 .card h3 { margin-bottom:0.5rem; color:var(--color-primary-dark); }
 
-/* 8. Gallery */
+/* 8. Gallery – Lightbox-ready */
 .gallery-grid { display:grid; gap:1rem; grid-template-columns:repeat(auto-fit, minmax(200px,1fr)); }
-.gallery-grid img { border-radius:4px; transition:opacity 0.3s; }
+.gallery-grid img { border-radius:4px; transition: opacity var(--transition-duration) ease; cursor:pointer; }
 .gallery-grid img:hover { opacity:0.85; }
+/* Lightbox */
+.lightbox { position:fixed; inset:0; background:rgba(0,0,0,0.8); display:flex; align-items:center; justify-content:center; opacity:0; visibility:hidden; transition: opacity var(--transition-duration) ease; z-index:1000; }
+.lightbox.visible { opacity:1; visibility:visible; }
+.lightbox img { max-width:90vw; max-height:90vh; border-radius:8px; }
+/* Lightbox button defaults */
+.lightbox button {
+  position: absolute;
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 2rem;
+  cursor: pointer;
+}
+/* Close button */
+.lightbox-close {
+  top: 1rem;
+  right: 1rem;
+}
+/* Prev/Next buttons */
+.lightbox-prev {
+  left: 2rem;
+  top: 50%;
+  transform: translateY(-50%);
+}
+.lightbox-next {
+  right: 2rem;
+  top: 50%;
+  transform: translateY(-50%);
+}
 
-/* 9. Contact */
+/* 9. Stats – Animated counters */
+.stats-section { background: var(--color-bg-alt); text-align:center; }
+.counter { font-size:3rem; font-weight:600; color:var(--color-primary); }
+.counter-label { font-size:1rem; color:var(--color-text); }
+
+/* 10. Contact */
 .contact-section { background: var(--color-bg-alt); text-align:center; }
 .contact-form { display:flex; flex-direction:column; gap:0.75rem; max-width:500px; margin:0 auto; }
 .contact-form input, .contact-form textarea { padding:0.75rem; border:1px solid var(--color-muted); border-radius:4px; font-family:inherit; }
@@ -81,13 +139,21 @@ img { max-width: 100%; height:auto; display:block; }
 .submit-btn:hover { opacity:0.9; }
 .social-links { margin-top:1rem; display:flex; justify-content:center; gap:1rem; font-size:1.5rem; }
 
-/* 10. Footer */
+/* 11. Footer */
 .site-footer { text-align:center; padding:1rem 0; background: var(--color-bg-alt); font-size:0.9rem; }
 
-/* 11. Animations – Fade In */
-[data-fade] { opacity:0; transform:translateY(20px); transition:opacity 0.6s ease-out, transform 0.6s ease-out; }
+/* 12. Animations – Fade In & Slide In */
+[data-fade] { opacity:0; transform:translateY(20px); transition: opacity var(--transition-duration) ease-out, transform var(--transition-duration) ease-out; }
 [data-fade].visible { opacity:1; transform:none; }
+@keyframes slideIn {
+  from { transform:translateX(-30px); opacity:0; }
+  to { transform:translateX(0); opacity:1; }
+}
+.slide-in { animation: slideIn var(--transition-duration) ease forwards; }
 
-/* Responsive Typography */
-@media (min-width:600px) { .hero-title {font-size:3.5rem;} }
-@media (min-width:900px) { .hero-title {font-size:4rem;} }
+/* 17. Responsive Adjustments */
+@media (min-width:600px) {
+  .stats-grid { grid-template-columns: repeat(3, 1fr); }
+  .hero-title {font-size:3.5rem;}
+}
+@media (min-width:900px) { .hero-title { font-size: 3.5rem; } }
